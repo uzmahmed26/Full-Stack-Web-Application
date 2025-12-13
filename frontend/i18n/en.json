@@ -1,0 +1,7 @@
+{
+  "app_title": "Smart Todo App",
+  "app_description": "A simple and smart todo application.",
+  "add_task_placeholder": "Add a new task...",
+  "add_task_button": "Add Task",
+  "task_list_title": "Your Tasks"
+}

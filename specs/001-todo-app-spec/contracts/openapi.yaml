@@ -1,0 +1,510 @@
+openapi: 3.1.0
+info:
+  title: Todo Application API
+  description: |
+    RESTful API for managing todo tasks. Supports creating, reading, updating, and deleting tasks.
+
+    **Key Features**:
+    - CRUD operations on tasks
+    - Task status management (pending/completed)
+    - Filtering tasks by status
+    - Pagination support for large task lists
+
+    **Base URL**:
+    - Development: `http://localhost:8000`
+    - Production: `https://api.yourdomain.com`
+
+    **Authentication**: Not required in MVP (future enhancement)
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@yourdomain.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.yourdomain.com
+    description: Production server
+
+tags:
+  - name: tasks
+    description: Task management operations
+
+paths:
+  /tasks:
+    get:
+      tags:
+        - tasks
+      summary: List all tasks
+      description: |
+        Retrieve a paginated list of tasks. Supports filtering by status and pagination via limit/offset.
+
+        **Performance**: Returns tasks in under 2 seconds for up to 100 tasks (SC-002).
+      operationId: listTasks
+      parameters:
+        - name: status
+          in: query
+          description: Filter tasks by status (pending or completed)
+          required: false
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - name: limit
+          in: query
+          description: Maximum number of tasks to return (default: 50, max: 100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of tasks to skip for pagination (default: 0)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Successful response with list of tasks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        description: Total number of tasks matching the filter
+                        example: 42
+                      limit:
+                        type: integer
+                        description: Number of tasks per page
+                        example: 50
+                      offset:
+                        type: integer
+                        description: Number of tasks skipped
+                        example: 0
+                      hasMore:
+                        type: boolean
+                        description: Whether more tasks are available
+                        example: false
+              examples:
+                emptyList:
+                  summary: Empty task list
+                  value:
+                    data: []
+                    meta:
+                      total: 0
+                      limit: 50
+                      offset: 0
+                      hasMore: false
+                taskList:
+                  summary: List with tasks
+                  value:
+                    data:
+                      - id: "550e8400-e29b-41d4-a716-446655440000"
+                        title: "Buy groceries"
+                        description: "Milk, eggs, bread, coffee"
+                        status: "pending"
+                        createdAt: "2025-12-13T10:30:00Z"
+                        updatedAt: "2025-12-13T10:30:00Z"
+                      - id: "660e8400-e29b-41d4-a716-446655440001"
+                        title: "Write project specification"
+                        description: null
+                        status: "completed"
+                        createdAt: "2025-12-12T09:00:00Z"
+                        updatedAt: "2025-12-13T14:45:00Z"
+                    meta:
+                      total: 2
+                      limit: 50
+                      offset: 0
+                      hasMore: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - tasks
+      summary: Create a new task
+      description: |
+        Create a new task with a title and optional description. Task status defaults to 'pending'.
+
+        **Performance**: Task appears in list within 1 second (SC-001).
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+            examples:
+              minimal:
+                summary: Minimal task (title only)
+                value:
+                  title: "Buy groceries"
+              full:
+                summary: Full task with description and status
+                value:
+                  title: "Write project specification"
+                  description: "Include all technical details and API contracts"
+                  status: "pending"
+      responses:
+        '201':
+          description: Task created successfully
+          headers:
+            Location:
+              description: URL of the created task
+              schema:
+                type: string
+                example: /tasks/550e8400-e29b-41d4-a716-446655440000
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                title: "Buy groceries"
+                description: "Milk, eggs, bread, coffee"
+                status: "pending"
+                createdAt: "2025-12-13T10:30:00Z"
+                updatedAt: "2025-12-13T10:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /tasks/{taskId}:
+    get:
+      tags:
+        - tasks
+      summary: Get a single task by ID
+      description: Retrieve details of a specific task by its unique identifier.
+      operationId: getTask
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Successful response with task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                title: "Buy groceries"
+                description: "Milk, eggs, bread, coffee"
+                status: "pending"
+                createdAt: "2025-12-13T10:30:00Z"
+                updatedAt: "2025-12-13T10:30:00Z"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      tags:
+        - tasks
+      summary: Update an existing task
+      description: |
+        Partially update a task. Only provided fields will be updated.
+
+        **Performance**: Status change reflected within 1 second (SC-003).
+      operationId: updateTask
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+            examples:
+              updateStatus:
+                summary: Mark task as completed
+                value:
+                  status: "completed"
+              updateTitle:
+                summary: Update task title
+                value:
+                  title: "Buy groceries and cook dinner"
+              updateFull:
+                summary: Update multiple fields
+                value:
+                  title: "Buy groceries and cook dinner"
+                  description: "Milk, eggs, bread, coffee, chicken, vegetables"
+                  status: "completed"
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                title: "Buy groceries"
+                description: "Milk, eggs, bread, coffee"
+                status: "completed"
+                createdAt: "2025-12-13T10:30:00Z"
+                updatedAt: "2025-12-13T15:45:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - tasks
+      summary: Delete a task
+      description: |
+        Permanently delete a task. This action cannot be undone.
+
+        **Performance**: Deletion completes within 1 second (SC-004).
+      operationId: deleteTask
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '204':
+          description: Task deleted successfully (no content returned)
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /health:
+    get:
+      tags:
+        - system
+      summary: Health check endpoint
+      description: Check if the API is running and healthy. Used by load balancers and monitoring systems.
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2025-12-13T10:30:00Z"
+        '503':
+          description: API is unhealthy (e.g., database connection failed)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [unhealthy]
+                    example: unhealthy
+                  error:
+                    type: string
+                    example: "Database connection failed"
+
+components:
+  parameters:
+    TaskId:
+      name: taskId
+      in: path
+      description: Unique task identifier (UUID)
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440000"
+
+  schemas:
+    TaskStatus:
+      type: string
+      enum:
+        - pending
+        - completed
+      description: Task completion status
+      example: pending
+
+    TaskBase:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title (required, 1-200 characters)
+          example: "Buy groceries"
+        description:
+          type: string
+          nullable: true
+          maxLength: 2000
+          description: Task description (optional, max 2000 characters)
+          example: "Milk, eggs, bread, coffee"
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+
+    Task:
+      allOf:
+        - $ref: '#/components/schemas/TaskBase'
+        - type: object
+          required:
+            - id
+            - title
+            - status
+            - createdAt
+            - updatedAt
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique task identifier (auto-generated)
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            createdAt:
+              type: string
+              format: date-time
+              description: Creation timestamp (ISO 8601, UTC)
+              example: "2025-12-13T10:30:00Z"
+            updatedAt:
+              type: string
+              format: date-time
+              description: Last update timestamp (ISO 8601, UTC)
+              example: "2025-12-13T10:30:00Z"
+
+    TaskCreate:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title (required, 1-200 characters)
+          example: "Buy groceries"
+        description:
+          type: string
+          nullable: true
+          maxLength: 2000
+          description: Task description (optional, max 2000 characters)
+          example: "Milk, eggs, bread, coffee"
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 200
+          description: Updated task title (optional)
+          example: "Buy groceries and cook dinner"
+        description:
+          type: string
+          nullable: true
+          maxLength: 2000
+          description: Updated task description (optional)
+          example: "Milk, eggs, bread, coffee, chicken"
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code for programmatic handling
+              enum:
+                - VALIDATION_ERROR
+                - NOT_FOUND
+                - INTERNAL_ERROR
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Task title is required"
+            details:
+              type: object
+              description: Additional error details (optional)
+              additionalProperties: true
+              example:
+                field: "title"
+                constraint: "required"
+
+  responses:
+    BadRequest:
+      description: Invalid request (validation failed)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "VALIDATION_ERROR"
+              message: "Task title must be between 1 and 200 characters"
+              details:
+                field: "title"
+                constraint: "maxLength"
+                maxLength: 200
+
+    NotFound:
+      description: Task not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "NOT_FOUND"
+              message: "Task with ID 550e8400-e29b-41d4-a716-446655440000 not found"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "INTERNAL_ERROR"
+              message: "An unexpected error occurred. Please try again later."
+
+  securitySchemes:
+    # Future: Add authentication scheme (e.g., Bearer token, OAuth2)
+    # bearerAuth:
+    #   type: http
+    #   scheme: bearer
+    #   bearerFormat: JWT
+
+# Future: Apply security globally once authentication is implemented
+# security:
+#   - bearerAuth: []
