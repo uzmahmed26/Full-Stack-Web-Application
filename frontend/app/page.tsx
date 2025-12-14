@@ -8,9 +8,9 @@
 import TaskForm from '@/components/TaskForm';
 import TaskList from '@/components/TaskList';
 import VoiceCommand from '@/components/VoiceCommand';
-import { useTranslation } from '@/hooks/useTranslation';
+import { TranslationProvider, useTranslation } from '@/contexts/TranslationContext';
 
-export default function Home() {
+function HomeContent() {
   const { t, setLanguage, language } = useTranslation();
 
   return (
@@ -86,20 +86,20 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-center sm:text-left">
               <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                Smart Todo Application
+                {t('footer_title')}
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                Built with Next.js 16 + FastAPI + PostgreSQL
+                {t('footer_subtitle')}
               </p>
             </div>
             <div className="flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400">
               <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer"
                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                API Docs
+                {t('api_docs')}
               </a>
               <a href="http://localhost:8000/health" target="_blank" rel="noopener noreferrer"
                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                API Status
+                {t('api_status')}
               </a>
             </div>
           </div>
@@ -109,5 +109,13 @@ export default function Home() {
       {/* Voice Command Button */}
       <VoiceCommand />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <TranslationProvider>
+      <HomeContent />
+    </TranslationProvider>
   );
 }

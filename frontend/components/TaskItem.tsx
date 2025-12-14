@@ -8,12 +8,14 @@
 import { useState } from 'react';
 import { Task } from '@/lib/api';
 import { useToggleTask, useDeleteTask } from '@/hooks/useTasks';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface TaskItemProps {
   task: Task;
 }
 
 export default function TaskItem({ task }: TaskItemProps) {
+  const { t } = useTranslation();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
@@ -69,7 +71,7 @@ export default function TaskItem({ task }: TaskItemProps) {
           onClick={handleToggle}
           disabled={isToggling}
           className="flex-shrink-0 mt-1 transition-transform duration-200 hover:scale-110 active:scale-95"
-          aria-label={isPending ? 'Mark as completed' : 'Mark as pending'}
+          aria-label={isPending ? t('mark_completed') : t('mark_pending')}
         >
           <div
             className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
@@ -139,7 +141,7 @@ export default function TaskItem({ task }: TaskItemProps) {
               <span className={`w-1.5 h-1.5 rounded-full ${
                 isPending ? 'bg-orange-500' : 'bg-green-500'
               }`} />
-              <span className="text-xs font-semibold">{isPending ? 'Pending' : 'Completed'}</span>
+              <span className="text-xs font-semibold">{isPending ? t('pending') : t('completed')}</span>
             </span>
           </div>
         </div>
@@ -150,7 +152,7 @@ export default function TaskItem({ task }: TaskItemProps) {
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="opacity-0 group-hover:opacity-100 p-2 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 transform hover:scale-110 active:scale-95"
-              aria-label="Delete task"
+              aria-label={t('delete_task')}
               disabled={isDeleting}
             >
               <svg
@@ -178,14 +180,14 @@ export default function TaskItem({ task }: TaskItemProps) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
                 ) : (
-                  'Delete'
+                  t('delete')
                 )}
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 className="text-xs bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold px-3 py-2 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105 active:scale-95"
               >
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           )}

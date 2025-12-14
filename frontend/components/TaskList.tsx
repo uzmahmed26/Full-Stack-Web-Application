@@ -9,8 +9,10 @@ import { useState } from 'react';
 import { useTasks } from '@/hooks/useTasks';
 import { TaskStatus } from '@/lib/api';
 import TaskItem from './TaskItem';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 export default function TaskList() {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<TaskStatus | undefined>(undefined);
 
   const { tasks, total, isLoading, isError, error } = useTasks(filter);
@@ -28,8 +30,8 @@ export default function TaskList() {
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
           <div>
-            <p className="font-semibold text-red-700 dark:text-red-300">Error Loading Tasks</p>
-            <p className="text-sm text-red-600 dark:text-red-400 mt-1">{error?.message || 'Please try again later'}</p>
+            <p className="font-semibold text-red-700 dark:text-red-300">{t('error_loading')}</p>
+            <p className="text-sm text-red-600 dark:text-red-400 mt-1">{error?.message || t('error_try_again')}</p>
           </div>
         </div>
       </div>
@@ -46,11 +48,11 @@ export default function TaskList() {
               <svg className="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span>Your Tasks</span>
+              <span>{t('your_tasks')}</span>
             </h2>
             {!isLoading && (
               <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                {total} task{total !== 1 ? 's' : ''} {filter ? `(${filter})` : 'total'}
+                {total} {total !== 1 ? t('tasks_count_plural') : t('tasks_count')} {filter ? `(${filter})` : t('tasks_total')}
               </p>
             )}
           </div>
@@ -66,7 +68,7 @@ export default function TaskList() {
               }`}
             >
               <span className="flex items-center gap-2">
-                All
+                {t('all')}
                 <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${
                   filter === undefined
                     ? 'bg-white/20 text-white'
@@ -85,7 +87,7 @@ export default function TaskList() {
               }`}
             >
               <span className="flex items-center gap-2">
-                Pending
+                {t('pending')}
                 <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${
                   filter === 'pending'
                     ? 'bg-white/20 text-white'
@@ -104,7 +106,7 @@ export default function TaskList() {
               }`}
             >
               <span className="flex items-center gap-2">
-                Completed
+                {t('completed')}
                 <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${
                   filter === 'completed'
                     ? 'bg-white/20 text-white'
@@ -131,7 +133,7 @@ export default function TaskList() {
                 </svg>
               </div>
             </div>
-            <p className="mt-4 text-slate-600 dark:text-slate-400 font-medium">Loading your tasks...</p>
+            <p className="mt-4 text-slate-600 dark:text-slate-400 font-medium">{t('loading_tasks')}</p>
           </div>
         )}
 
@@ -149,12 +151,10 @@ export default function TaskList() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
-              {filter ? `No ${filter} tasks` : 'No tasks yet'}
+              {filter === 'pending' ? t('no_pending_tasks') : filter === 'completed' ? t('no_completed_tasks') : t('no_tasks')}
             </h3>
             <p className="text-slate-600 dark:text-slate-400 text-center max-w-sm">
-              {filter
-                ? `You don't have any ${filter} tasks at the moment`
-                : 'Start by creating your first task using the form on the left'}
+              {filter === 'pending' ? t('no_pending_message') : filter === 'completed' ? t('no_completed_message') : t('no_tasks_message')}
             </p>
           </div>
         )}

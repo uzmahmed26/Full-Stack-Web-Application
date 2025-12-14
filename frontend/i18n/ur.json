@@ -1,7 +1,49 @@
 {
   "app_title": "اسمارٹ ٹوڈو ایپ",
-  "app_description": "ایک سادہ اور اسمارٹ ٹوڈو ایپلیکیشن۔",
-  "add_task_placeholder": "ایک نیا کام شامل کریں...",
-  "add_task_button": "کام شامل کریں",
-  "task_list_title": "آپ کے کام"
+  "app_description": "اپنے کاموں کو مؤثر طریقے سے منظم کریں اور پیداواری رہیں",
+
+  "create_new_task": "نیا کام بنائیں",
+  "add_task_subtitle": "اپنی فہرست میں کام شامل کریں",
+  "task_title": "کام کا عنوان",
+  "task_title_placeholder": "مثال کے طور پر، پروجیکٹ دستاویزات مکمل کریں",
+  "description": "تفصیل",
+  "description_optional": "تفصیل (اختیاری)",
+  "description_placeholder": "اپنے کام کے بارے میں مزید تفصیلات شامل کریں...",
+  "add_task": "کام شامل کریں",
+  "creating": "بنایا جا رہا ہے...",
+  "chars_left": "باقی",
+
+  "your_tasks": "آپ کے کام",
+  "tasks_count": "کام",
+  "tasks_count_plural": "کام",
+  "tasks_total": "کل",
+  "all": "تمام",
+  "pending": "زیر التواء",
+  "completed": "مکمل",
+
+  "no_tasks": "ابھی تک کوئی کام نہیں",
+  "no_tasks_message": "بائیں طرف فارم استعمال کرتے ہوئے اپنا پہلا کام بنائیں",
+  "no_pending_tasks": "کوئی زیر التواء کام نہیں",
+  "no_pending_message": "اس وقت آپ کے پاس کوئی زیر التواء کام نہیں ہے",
+  "no_completed_tasks": "کوئی مکمل شدہ کام نہیں",
+  "no_completed_message": "اس وقت آپ کے پاس کوئی مکمل شدہ کام نہیں ہے",
+
+  "delete": "حذف کریں",
+  "cancel": "منسوخ کریں",
+  "mark_completed": "مکمل شدہ کے طور پر نشان زد کریں",
+  "mark_pending": "زیر التواء کے طور پر نشان زد کریں",
+  "delete_task": "کام حذف کریں",
+
+  "task_created": "کام کامیابی سے بنایا گیا!",
+  "error_title_required": "کام کا عنوان ضروری ہے",
+  "error_title_length": "عنوان 200 حروف یا اس سے کم ہونا چاہیے",
+  "error_description_length": "تفصیل 2000 حروف یا اس سے کم ہونی چاہیے",
+  "error_loading": "کام لوڈ کرنے میں خرابی",
+  "error_try_again": "براہ کرم بعد میں دوبارہ کوشش کریں",
+  "loading_tasks": "آپ کے کام لوڈ ہو رہے ہیں...",
+
+  "api_docs": "API دستاویزات",
+  "api_status": "API حیثیت",
+  "footer_title": "اسمارٹ ٹوڈو ایپلیکیشن",
+  "footer_subtitle": "Next.js 16 + FastAPI + PostgreSQL کے ساتھ بنایا گیا"
 }

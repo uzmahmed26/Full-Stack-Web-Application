@@ -7,8 +7,10 @@
 
 import { useState } from 'react';
 import { useCreateTask } from '@/hooks/useTasks';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 export default function TaskForm() {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,17 +25,17 @@ export default function TaskForm() {
 
     // Validation
     if (!title.trim()) {
-      setError('Task title is required');
+      setError(t('error_title_required'));
       return;
     }
 
     if (title.length > 200) {
-      setError('Title must be 200 characters or less');
+      setError(t('error_title_length'));
       return;
     }
 
     if (description.length > 2000) {
-      setError('Description must be 2000 characters or less');
+      setError(t('error_description_length'));
       return;
     }
 
@@ -71,8 +73,8 @@ export default function TaskForm() {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">Create New Task</h2>
-            <p className="text-xs text-blue-100">Add a task to your list</p>
+            <h2 className="text-xl font-bold text-white">{t('create_new_task')}</h2>
+            <p className="text-xs text-blue-100">{t('add_task_subtitle')}</p>
           </div>
         </div>
       </div>
@@ -83,10 +85,10 @@ export default function TaskForm() {
         <div className="space-y-2">
           <label htmlFor="title" className="flex items-center justify-between text-sm font-semibold text-slate-700 dark:text-slate-300">
             <span className="flex items-center gap-1">
-              Task Title <span className="text-red-500">*</span>
+              {t('task_title')} <span className="text-red-500">*</span>
             </span>
             <span className={`text-xs font-normal ${titleCharsLeft < 20 ? 'text-orange-500' : 'text-slate-500 dark:text-slate-400'}`}>
-              {titleCharsLeft} left
+              {titleCharsLeft} {t('chars_left')}
             </span>
           </label>
           <div className="relative">
@@ -95,7 +97,7 @@ export default function TaskForm() {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., Complete project documentation"
+              placeholder={t('task_title_placeholder')}
               className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
               maxLength={200}
               disabled={isSubmitting}
@@ -117,16 +119,16 @@ export default function TaskForm() {
         {/* Description Input */}
         <div className="space-y-2">
           <label htmlFor="description" className="flex items-center justify-between text-sm font-semibold text-slate-700 dark:text-slate-300">
-            <span>Description (Optional)</span>
+            <span>{t('description_optional')}</span>
             <span className={`text-xs font-normal ${descCharsLeft < 100 ? 'text-orange-500' : 'text-slate-500 dark:text-slate-400'}`}>
-              {descCharsLeft} left
+              {descCharsLeft} {t('chars_left')}
             </span>
           </label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Add more details about your task..."
+            placeholder={t('description_placeholder')}
             rows={4}
             className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200 resize-none text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
             maxLength={2000}
@@ -153,7 +155,7 @@ export default function TaskForm() {
               <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <p className="text-sm text-green-700 dark:text-green-300 font-medium">Task created successfully!</p>
+              <p className="text-sm text-green-700 dark:text-green-300 font-medium">{t('task_created')}</p>
             </div>
           </div>
         )}
@@ -170,14 +172,14 @@ export default function TaskForm() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              <span>Creating...</span>
+              <span>{t('creating')}</span>
             </>
           ) : (
             <>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              <span>Add Task</span>
+              <span>{t('add_task')}</span>
             </>
           )}
         </button>

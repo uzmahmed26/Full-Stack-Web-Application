@@ -1,7 +1,49 @@
 {
   "app_title": "Smart Todo App",
-  "app_description": "A simple and smart todo application.",
-  "add_task_placeholder": "Add a new task...",
-  "add_task_button": "Add Task",
-  "task_list_title": "Your Tasks"
+  "app_description": "Organize your tasks efficiently and stay productive",
+
+  "create_new_task": "Create New Task",
+  "add_task_subtitle": "Add a task to your list",
+  "task_title": "Task Title",
+  "task_title_placeholder": "e.g., Complete project documentation",
+  "description": "Description",
+  "description_optional": "Description (Optional)",
+  "description_placeholder": "Add more details about your task...",
+  "add_task": "Add Task",
+  "creating": "Creating...",
+  "chars_left": "left",
+
+  "your_tasks": "Your Tasks",
+  "tasks_count": "task",
+  "tasks_count_plural": "tasks",
+  "tasks_total": "total",
+  "all": "All",
+  "pending": "Pending",
+  "completed": "Completed",
+
+  "no_tasks": "No tasks yet",
+  "no_tasks_message": "Start by creating your first task using the form on the left",
+  "no_pending_tasks": "No pending tasks",
+  "no_pending_message": "You don't have any pending tasks at the moment",
+  "no_completed_tasks": "No completed tasks",
+  "no_completed_message": "You don't have any completed tasks at the moment",
+
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "mark_completed": "Mark as completed",
+  "mark_pending": "Mark as pending",
+  "delete_task": "Delete task",
+
+  "task_created": "Task created successfully!",
+  "error_title_required": "Task title is required",
+  "error_title_length": "Title must be 200 characters or less",
+  "error_description_length": "Description must be 2000 characters or less",
+  "error_loading": "Error Loading Tasks",
+  "error_try_again": "Please try again later",
+  "loading_tasks": "Loading your tasks...",
+
+  "api_docs": "API Docs",
+  "api_status": "API Status",
+  "footer_title": "Smart Todo Application",
+  "footer_subtitle": "Built with Next.js 16 + FastAPI + PostgreSQL"
 }
