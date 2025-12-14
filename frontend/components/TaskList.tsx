@@ -1,6 +1,6 @@
 /**
- * Task List Component
- * Displays list of tasks with filtering
+ * Task List Component - Professional Design
+ * Displays list of tasks with advanced filtering and animations
  */
 
 'use client';
@@ -22,99 +22,158 @@ export default function TaskList() {
 
   if (isError) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-        <p className="font-medium">Error loading tasks</p>
-        <p className="text-sm mt-1">{error?.message || 'Please try again later'}</p>
+      <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 rounded-xl p-6 shadow-lg">
+        <div className="flex items-start gap-4">
+          <svg className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+          </svg>
+          <div>
+            <p className="font-semibold text-red-700 dark:text-red-300">Error Loading Tasks</p>
+            <p className="text-sm text-red-600 dark:text-red-400 mt-1">{error?.message || 'Please try again later'}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Your Tasks
-          {!isLoading && (
-            <span className="ml-2 text-sm font-normal text-gray-500">
-              ({total} {filter ? filter : 'total'})
-            </span>
-          )}
-        </h2>
+    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      {/* Header with Stats */}
+      <div className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 px-6 py-5 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <svg className="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Your Tasks</span>
+            </h2>
+            {!isLoading && (
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                {total} task{total !== 1 ? 's' : ''} {filter ? `(${filter})` : 'total'}
+              </p>
+            )}
+          </div>
 
-        {/* Filter Buttons */}
-        <div className="flex gap-2">
-          <button
-            onClick={() => setFilter(undefined)}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-              filter === undefined
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            All ({allTasks.length})
-          </button>
-          <button
-            onClick={() => setFilter('pending')}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-              filter === 'pending'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Pending ({pendingTasks.length})
-          </button>
-          <button
-            onClick={() => setFilter('completed')}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-              filter === 'completed'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Completed ({completedTasks.length})
-          </button>
+          {/* Filter Pills */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setFilter(undefined)}
+              className={`group relative px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
+                filter === undefined
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
+                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:shadow-md border border-slate-200 dark:border-slate-600'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                All
+                <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${
+                  filter === undefined
+                    ? 'bg-white/20 text-white'
+                    : 'bg-slate-100 dark:bg-slate-600 text-slate-700 dark:text-slate-300'
+                }`}>
+                  {allTasks.length}
+                </span>
+              </span>
+            </button>
+            <button
+              onClick={() => setFilter('pending')}
+              className={`group relative px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
+                filter === 'pending'
+                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:shadow-md border border-slate-200 dark:border-slate-600'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                Pending
+                <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${
+                  filter === 'pending'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                }`}>
+                  {pendingTasks.length}
+                </span>
+              </span>
+            </button>
+            <button
+              onClick={() => setFilter('completed')}
+              className={`group relative px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
+                filter === 'completed'
+                  ? 'bg-green-600 text-white shadow-lg shadow-green-500/30'
+                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:shadow-md border border-slate-200 dark:border-slate-600'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                Completed
+                <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${
+                  filter === 'completed'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                }`}>
+                  {completedTasks.length}
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="text-center py-8">
-          <div className="inline-block w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-          <p className="mt-2 text-gray-600">Loading tasks...</p>
-        </div>
-      )}
+      {/* Content Area */}
+      <div className="p-6">
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-slate-200 dark:border-slate-700 border-t-blue-600 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+            </div>
+            <p className="mt-4 text-slate-600 dark:text-slate-400 font-medium">Loading your tasks...</p>
+          </div>
+        )}
 
-      {/* Empty State */}
-      {!isLoading && tasks.length === 0 && (
-        <div className="text-center py-12">
-          <svg
-            className="mx-auto w-16 h-16 text-gray-300"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-          </svg>
-          <p className="mt-4 text-gray-600">
-            {filter
-              ? `No ${filter} tasks`
-              : 'No tasks yet. Create your first task above!'}
-          </p>
-        </div>
-      )}
+        {/* Empty State */}
+        {!isLoading && tasks.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-24 h-24 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-6">
+              <svg
+                className="w-12 h-12 text-slate-400 dark:text-slate-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+              {filter ? `No ${filter} tasks` : 'No tasks yet'}
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 text-center max-w-sm">
+              {filter
+                ? `You don't have any ${filter} tasks at the moment`
+                : 'Start by creating your first task using the form on the left'}
+            </p>
+          </div>
+        )}
 
-      {/* Task List */}
-      {!isLoading && tasks.length > 0 && (
-        <div className="space-y-3">
-          {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </div>
-      )}
+        {/* Task List with Stagger Animation */}
+        {!isLoading && tasks.length > 0 && (
+          <div className="space-y-3">
+            {tasks.map((task, index) => (
+              <div
+                key={task.id}
+                className="animate-slide-up"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <TaskItem task={task} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
