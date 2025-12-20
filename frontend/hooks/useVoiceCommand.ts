@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useTasks } from './useTasks';
+import { useTasks, useCreateTask, useUpdateTask, useDeleteTask } from './useTasks';
 
 // TypeScript definitions for Web Speech API
 interface SpeechRecognitionErrorEvent extends Event {
@@ -37,7 +37,10 @@ export const useVoiceCommand = () => {
   const [hasSpeechRecognition, setHasSpeechRecognition] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
-  const { tasks, addTask, deleteTask, updateTask } = useTasks();
+  const { tasks } = useTasks();
+  const { createTask } = useCreateTask();
+  const { updateTask } = useUpdateTask();
+  const { deleteTask } = useDeleteTask();
 
   // Define the voice commands
   const commands: VoiceCommand[] = [
@@ -45,7 +48,7 @@ export const useVoiceCommand = () => {
       command: 'create todo *',
       callback: (taskName: string) => {
         if (taskName) {
-          addTask({ title: taskName, description: 'Created via voice command', completed: false });
+          createTask({ title: taskName, description: 'Created via voice command' });
         }
       },
     },
@@ -66,7 +69,7 @@ export const useVoiceCommand = () => {
         if (taskName) {
           const taskToComplete = tasks.find(task => task.title.toLowerCase() === taskName.toLowerCase());
           if (taskToComplete) {
-            updateTask(taskToComplete.id, { completed: true });
+            updateTask(taskToComplete.id, { status: 'completed' });
           }
         }
       },

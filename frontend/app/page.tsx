@@ -93,11 +93,11 @@ function HomeContent() {
               </p>
             </div>
             <div className="flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400">
-              <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer"
+              <a href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/docs`} target="_blank" rel="noopener noreferrer"
                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 {t('api_docs')}
               </a>
-              <a href="http://localhost:8000/health" target="_blank" rel="noopener noreferrer"
+              <a href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/health`} target="_blank" rel="noopener noreferrer"
                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                 {t('api_status')}
               </a>
